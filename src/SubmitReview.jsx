@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './submitReview.css';
-import axios from 'axios';
+import { submit } from './api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -26,7 +26,7 @@ export default function SubmitReview() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/submit', formData);
+      await submit(formData);
       toast.success("✅ Review submitted successfully!");
       setFormData({
         location: '',

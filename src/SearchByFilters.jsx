@@ -1,7 +1,5 @@
-// src/components/SearchByFilters.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchFilteredLocations, fetchLocationDetails } from './api';
-import LocationDetails from './LocationDetails';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './searchByFilters.css';
@@ -18,8 +16,19 @@ export default function SearchByFilters() {
   const [results, setResults] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
 
+  // Load saved state from localStorage
+  useEffect(() => {
+    const savedFilters = localStorage.getItem('filters');
+    const savedResults = localStorage.getItem('results');
+
+    if (savedFilters) setFilters(JSON.parse(savedFilters));
+    if (savedResults) setResults(JSON.parse(savedResults));
+  }, []);
+
   const handleSliderChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: Number(e.target.value) });
+    const updated = { ...filters, [e.target.name]: Number(e.target.value) };
+    setFilters(updated);
+    localStorage.setItem('filters', JSON.stringify(updated));
   };
 
   const handleSearch = async () => {
@@ -29,6 +38,8 @@ export default function SearchByFilters() {
         toast.info('No locations match these filters');
       }
       setResults(res.data);
+      localStorage.setItem('results', JSON.stringify(res.data));
+      localStorage.setItem('filters', JSON.stringify(filters));
     } catch (err) {
       toast.error('Error fetching filtered data');
     }
@@ -47,13 +58,22 @@ export default function SearchByFilters() {
     }
   };
 
+  // Redirect on location select
   if (selectedLocation) {
-    return <LocationDetails location={selectedLocation} />;
+    window.location.href = `/location/${selectedLocation}`;
   }
 
   return (
     <div className="search-filter-container">
-      <ToastContainer/>
+            <ToastContainer
+              position="bottom-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              closeOnClick
+              pauseOnHover
+              draggable
+              theme="dark"
+            />
       <h2>🌐 Find Neighborhoods</h2>
 
       <div className="search-bar">
@@ -65,28 +85,29 @@ export default function SearchByFilters() {
         />
         <button onClick={handleDirectSearch}>Search</button>
       </div>
-<center>
-      <div className="filter-section">
-        <h3 style={{marginTop:"0px"}}>Or <br></br>apply filters:</h3>
-        {['clean', 'rent', 'electricity', 'safety'].map((field) => (
-          <div key={field} className="slider-group">
-            <label>
-              {field.charAt(0).toUpperCase() + field.slice(1)}: {filters[field]}
-            </label>
-            <input
-              type="range"
-              name={field}
-              min={field === 'rent' ? 1 : 0}
-              max={10}
-              value={filters[field]}
-              onChange={handleSliderChange}
-            />
-          </div>
-        ))}
-        <button className="search-btn" onClick={handleSearch}>
-          🔍 Apply Filters
-        </button>
-      </div>
+
+      <center>
+        <div className="filter-section">
+          <h3 style={{ marginTop: '0px' }}>Or <br />apply filters:</h3>
+          {['clean', 'rent', 'electricity', 'safety'].map((field) => (
+            <div key={field} className="slider-group">
+              <label>
+                {field.charAt(0).toUpperCase() + field.slice(1)}: {filters[field]}
+              </label>
+              <input
+                type="range"
+                name={field}
+                min={field === 'rent' ? 1 : 0}
+                max={10}
+                value={filters[field]}
+                onChange={handleSliderChange}
+              />
+            </div>
+          ))}
+          <button className="search-btn" onClick={handleSearch}>
+            🔍 Apply Filters
+          </button>
+        </div>
       </center>
 
       <div className="results-list">

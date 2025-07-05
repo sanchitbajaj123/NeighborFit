@@ -1,10 +1,13 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React,{useEffect} from 'react';
+import { useNavigate,} from 'react-router-dom';
 import './home.css';
 
 export default function Home() {
   const navigate = useNavigate();
-
+  useEffect(()=>{
+  localStorage.removeItem('results');
+  localStorage.removeItem('filters');
+  },[])
   return (
     <div className="home-container">
       <div className="glass-card">
