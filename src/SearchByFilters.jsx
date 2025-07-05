@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { fetchFilteredLocations, fetchLocationDetails } from './api';
+import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './searchByFilters.css';
 
 export default function SearchByFilters() {
-  // Initial filter values
   const [filters, setFilters] = useState({
     clean: 0,
     rent: 0,
@@ -13,13 +13,14 @@ export default function SearchByFilters() {
     safety: 0,
   });
 
-  // UI state variables
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [loading, setLoading] = useState(false); // Visual loader state
+  const [loading, setLoading] = useState(false);
 
-  // 🔁 On component mount, get saved state from localStorage
+  const navigate = useNavigate();
+
+  // Load filters and results from localStorage on first mount
   useEffect(() => {
     const savedFilters = localStorage.getItem('filters');
     const savedResults = localStorage.getItem('results');
@@ -28,14 +29,14 @@ export default function SearchByFilters() {
     if (savedResults) setResults(JSON.parse(savedResults));
   }, []);
 
-  // 🔄 Handle slider change and persist filters in localStorage
+  // Handle slider change + store updated filters in localStorage
   const handleSliderChange = (e) => {
     const updated = { ...filters, [e.target.name]: Number(e.target.value) };
     setFilters(updated);
     localStorage.setItem('filters', JSON.stringify(updated));
   };
 
-  // 🔍 Filter search (using filters)
+  // Apply filters and fetch matching locations
   const handleSearch = async () => {
     const toastId = toast.loading("Fetching results...");
     setLoading(true);
@@ -43,12 +44,9 @@ export default function SearchByFilters() {
     try {
       const res = await fetchFilteredLocations(filters);
       setResults(res.data);
-
-      // Save in localStorage
       localStorage.setItem('results', JSON.stringify(res.data));
       localStorage.setItem('filters', JSON.stringify(filters));
 
-      // Show appropriate toast
       if (res.data.length === 0) {
         toast.update(toastId, {
           render: "No locations match these filters.",
@@ -76,7 +74,7 @@ export default function SearchByFilters() {
     }
   };
 
-  // 🔎 Direct location search
+  // Direct location search
   const handleDirectSearch = async () => {
     if (!searchTerm.trim()) {
       toast.warn('Please enter a location name');
@@ -85,20 +83,22 @@ export default function SearchByFilters() {
 
     try {
       const res = await fetchLocationDetails(searchTerm);
-      setSelectedLocation(res.data.location); // Triggers redirect
+      setSelectedLocation(res.data.location); // Navigate later
     } catch (err) {
       toast.error('Location not found');
     }
   };
 
-  // ⏩ Navigate to location details
-  if (selectedLocation) {
-    window.location.href = `/location/${selectedLocation}`;
-  }
+  // Navigate on location select
+  useEffect(() => {
+    if (selectedLocation) {
+      navigate(`/location/${selectedLocation}`);
+    }
+  }, [selectedLocation, navigate]);
 
   return (
     <div className="search-filter-container">
-      {/* 🍞 Toast notifications */}
+      {/* Toast notification container */}
       <ToastContainer
         position="bottom-center"
         autoClose={3000}
@@ -109,10 +109,10 @@ export default function SearchByFilters() {
         theme="dark"
       />
 
-      {/* 🔍 Title */}
+      {/* Title */}
       <h2>🌐 Find Neighborhoods</h2>
 
-      {/* 🔍 Direct search by name */}
+      {/* Search by location name */}
       <div className="search-bar">
         <input
           type="text"
@@ -123,7 +123,7 @@ export default function SearchByFilters() {
         <button onClick={handleDirectSearch}>Search</button>
       </div>
 
-      {/* 🎚️ Filters section */}
+      {/* Filter sliders */}
       <center>
         <div className="filter-section">
           <h3 style={{ marginTop: '0px' }}>Or <br />apply filters:</h3>
@@ -147,21 +147,20 @@ export default function SearchByFilters() {
             </div>
           ))}
 
-          {/* Filter search button */}
           <button className="search-btn" onClick={handleSearch}>
             🔍 Apply Filters
           </button>
         </div>
       </center>
 
-      {/* 🌀 Loading state */}
+      {/* Visual loader */}
       {loading && (
         <p style={{ textAlign: 'center', color: '#ccc', marginTop: '1rem' }}>
           🔄 Loading...
         </p>
       )}
 
-      {/* 📍 Results */}
+      {/* Search results */}
       <div className="results-list">
         {results.map((loc, i) => (
           <div key={i} className="location-card">
