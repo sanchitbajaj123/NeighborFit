@@ -3,10 +3,11 @@ const mod=require('./Schema')
 const mongo = require('mongoose');
 const cors=require('cors')
 const app=exp();
+require('dotenv').config();
 app.use(exp.json());
 app.use(cors());
 
-mongo.connect('mongodb://localhost:27017/neighborfit').
+mongo.connect(process.env.DB_URL).
 then(()=> console.log('mongo on'))
 
 app.post('/submit',async(req,res)=>{
@@ -72,12 +73,13 @@ app.get('/filter', async (req, res) => {
       safety: avg.safety / len
     };
 
-    return (
-      avgData.clean >= clean &&
-      avgData.rent <= rent &&
-      avgData.electricity >= electricity &&
-      avgData.safety >= safety
-    );
+  return (
+    avgData.clean >= clean - 1 &&
+    avgData.rent <= rent + 1 &&
+    avgData.electricity >= electricity - 1 &&
+    avgData.safety >= safety - 1
+  );
+
   });
 
   res.json(result);
