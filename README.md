@@ -2,6 +2,7 @@
 
 NeighborFit helps people **discover the best neighborhoods** based on **cleanliness, rent, electricity, safety**, and user reviews. Users can also contribute by **submitting their own reviews** for locations they’ve lived in.
 
+🌐 **Live Demo**: [https://neighbor-fit-delta.vercel.app/](https://neighbor-fit-delta.vercel.app/)
 ---
 
 ## 🚀 Live Features
