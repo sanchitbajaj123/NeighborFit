@@ -52,20 +52,20 @@ NeighborFit helps people **discover the best neighborhoods** based on **cleanlin
 
 ## 🗂️ Project Structure
 /client
-├── src
-│ ├── App.js
-│ ├── api.js # Axios-based API calls
-│ ├── Home.jsx # Homepage
-│ ├── SearchByFilters.jsx# Search filters + results
-│ ├── LocationDetails.jsx# Location-specific review page
-│ ├── SubmitReview.jsx # Submit review form
-│ ├── styles/ # CSS files
+├── src<br>
+│ ├── App.js<br>
+│ ├── api.js # Axios-based API calls<br>
+│ ├── Home.jsx # Homepage<br>
+│ ├── SearchByFilters.jsx# Search filters + results<br>
+│ ├── LocationDetails.jsx# Location-specific review page<br>
+│ ├── SubmitReview.jsx # Submit review form<br>
+│ ├── styles/ # CSS files<br>
 │
-/server
-├── index.js # Express backend
-├── models/schema.js # Mongoose model
-├── routes.js # All route logic
-├── data.json # Optional: Dummy data
+/server<br>
+├── index.js # Express backend<br>
+├── models/schema.js # Mongoose model<br>
+├── routes.js # All route logic<br>
+├── data.json # Optional: Dummy data<br>
 
 
 ---
