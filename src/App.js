@@ -7,8 +7,10 @@ import SearchByFilters from './SearchByFilters';
 import LocationDetails from './LocationDetails';
 export default function App() {
   return (
-    <>
-      <Navbar />
+    <>{/* 
+    Routes targeting components
+    */}
+      <Navbar />{/* Navbar component fixed on top*/}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/find" element={<SearchByFilters/>}/>
