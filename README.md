@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+# 🏘️ NeighborFit – Neighborhood Review & Discovery App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+NeighborFit helps people **discover the best neighborhoods** based on **cleanliness, rent, electricity, safety**, and user reviews. Users can also contribute by **submitting their own reviews** for locations they’ve lived in.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Live Features
 
-### `npm start`
+### 🔍 1. Filter-Based Search
+- Users can **apply sliders** to filter neighborhoods based on:
+  - Cleanliness (0–10)
+  - Rent affordability (1–10)
+  - Electricity availability (0–10)
+  - Safety (0–10)
+- Results are shown as a list of matching locations.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 📍 2. Direct Location Search
+- A user can search any location by typing its name.
+- If found, it directly redirects to the details page.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🧾 3. Location Details Page
+- Displays:
+  - Average cleanliness, rent, electricity, safety
+  - Total number of reviews
+  - List of individual reviews (name + comment)
+- Includes a **Back button** that restores previous filters and results via `localStorage`.
 
-### `npm test`
+### ✍️ 4. Submit a Review
+- Users can rate a new or existing location and provide a short review.
+- Each submission includes:
+  - Location
+  - User (optional)
+  - 4 Ratings (clean, rent, electricity, safety)
+  - Text review
+- Submits to backend using `POST /submit`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🧱 Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Frontend          | Backend           | Database |
+|-------------------|-------------------|----------|
+| React.js          | Node.js + Express | MongoDB  |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Libraries Used
+- `axios` – API communication
+- `react-toastify` – Toaster notifications
+- `react-router-dom` – Routing between pages
+- `uuid` – For ID generation (optional)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🗂️ Project Structure
+/client
+├── src
+│ ├── App.js
+│ ├── api.js # Axios-based API calls
+│ ├── Home.jsx # Homepage
+│ ├── SearchByFilters.jsx# Search filters + results
+│ ├── LocationDetails.jsx# Location-specific review page
+│ ├── SubmitReview.jsx # Submit review form
+│ ├── styles/ # CSS files
+│
+/server
+├── index.js # Express backend
+├── models/schema.js # Mongoose model
+├── routes.js # All route logic
+├── data.json # Optional: Dummy data
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📡 Backend API Endpoints
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+| Method | Route                  | Description                            |
+|--------|------------------------|----------------------------------------|
+| `POST` | `/submit`              | Submits a new review                   |
+| `GET`  | `/filter?param=value`  | Fetches filtered locations             |
+| `GET`  | `/location/:name`      | Fetches reviews + averages for a location |
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 💾 State Management
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **LocalStorage used** for:
+  - Preserving filter values
+  - Storing search results (to allow back navigation)
+- Automatically resets on Home page load.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
