@@ -15,8 +15,9 @@ export default function SearchByFilters() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [loading, setLoading] = useState(false); // for visual loading text
 
-  // Load saved state from localStorage
+  // Load from localStorage
   useEffect(() => {
     const savedFilters = localStorage.getItem('filters');
     const savedResults = localStorage.getItem('results');
@@ -32,16 +33,40 @@ export default function SearchByFilters() {
   };
 
   const handleSearch = async () => {
+    const toastId = toast.loading("Fetching results...");
+    setLoading(true);
+
     try {
       const res = await fetchFilteredLocations(filters);
-      if (res.data.length === 0) {
-        toast.info('No locations match these filters');
-      }
+
       setResults(res.data);
       localStorage.setItem('results', JSON.stringify(res.data));
       localStorage.setItem('filters', JSON.stringify(filters));
+
+      if (res.data.length === 0) {
+        toast.update(toastId, {
+          render: "No locations match these filters.",
+          type: "info",
+          isLoading: false,
+          autoClose: 3000
+        });
+      } else {
+        toast.update(toastId, {
+          render: "Results loaded successfully ✅",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000
+        });
+      }
     } catch (err) {
-      toast.error('Error fetching filtered data');
+      toast.update(toastId, {
+        render: "Error fetching filtered data ❌",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,6 +75,7 @@ export default function SearchByFilters() {
       toast.warn('Please enter a location name');
       return;
     }
+
     try {
       const res = await fetchLocationDetails(searchTerm);
       setSelectedLocation(res.data.location);
@@ -58,22 +84,22 @@ export default function SearchByFilters() {
     }
   };
 
-  // Redirect on location select
   if (selectedLocation) {
     window.location.href = `/location/${selectedLocation}`;
   }
 
   return (
     <div className="search-filter-container">
-            <ToastContainer
-              position="bottom-center"
-              autoClose={3000}
-              hideProgressBar={false}
-              closeOnClick
-              pauseOnHover
-              draggable
-              theme="dark"
-            />
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
+
       <h2>🌐 Find Neighborhoods</h2>
 
       <div className="search-bar">
@@ -109,6 +135,12 @@ export default function SearchByFilters() {
           </button>
         </div>
       </center>
+
+      {loading && (
+        <p style={{ textAlign: 'center', color: '#ccc', marginTop: '1rem' }}>
+          🔄 Loading...
+        </p>
+      )}
 
       <div className="results-list">
         {results.map((loc, i) => (
